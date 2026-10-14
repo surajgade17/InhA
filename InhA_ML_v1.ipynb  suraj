@@ -18,7 +18,7 @@
       "source": [
         "# InhA bioactivity modelling: validation design and data limits\n",
         "Goal: test how well ML models predict pIC50 for M. tuberculosis InhA inhibitors from public ChEMBL data (second target of the DprE1 comparison), and how the validation design (random, scaffold, time, leave-one-paper-out) changes the answer.\n",
-        "Data: ChEMBL target CHEMBL1849 (enoyl-[acyl-carrier-protein] reductase [NADH], M. tuberculosis), standard_type IC50. Retrieved on: 4 October 2026 via the ChEMBL web resource client (live API; release 37 at the time of retrieval).\n",
+        "Data: ChEMBL target CHEMBL1849 (enoyl-[acyl-carrier-protein] reductase [NADH], M. tuberculosis), standard_type IC50. Retrieved on: 13 October 2026 via the ChEMBL web resource client (live API; release 37, confirmed on the ChEMBL downloads page).\n",
         "Random seed: 42 everywhere. Companion notebook: DprE1_ML_v1 (same pipeline, 130 compounds)."
       ]
     },
@@ -39,12 +39,12 @@
       "cell_type": "code",
       "execution_count": 1,
       "metadata": {
-        "collapsed": true,
-        "id": "2kVN4zDnvbcr",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "f68b6643-28f0-4343-b61c-0dcec665348a"
+        "collapsed": true,
+        "id": "2kVN4zDnvbcr",
+        "outputId": "4372750e-747a-4ee0-d132-e902b0840f87"
       },
       "outputs": [
         {
@@ -99,11 +99,11 @@
       "cell_type": "code",
       "execution_count": 2,
       "metadata": {
-        "id": "a9NzYEKna1zk",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "2513e1da-ec10-4ed4-e462-6261a897489f"
+        "id": "a9NzYEKna1zk",
+        "outputId": "16d83a65-5b9e-446a-feee-ac02fbd91290"
       },
       "outputs": [
         {
@@ -112,7 +112,7 @@
           "text": [
             "Enoyl-[acyl-carrier-protein] reductase [NADH] | Mycobacterium tuberculosis\n",
             "(488, 13)\n",
-            "Data retrieved on: 2026-10-13\n"
+            "Data retrieved on: 2026-10-14\n"
           ]
         }
       ],
@@ -141,11 +141,11 @@
       "cell_type": "code",
       "execution_count": 3,
       "metadata": {
-        "id": "rCDHdf52FbQJ",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "66bcf6d0-4516-4e41-8583-0ab7153b6545"
+        "id": "rCDHdf52FbQJ",
+        "outputId": "1d6c7965-8b4f-4de0-cf47-0e99027d616f"
       },
       "outputs": [
         {
@@ -172,7 +172,7 @@
       },
       "source": [
         "## 1. Raw data inspection\n",
-        "488 records, 430 unique molecules, all assay type B (binding). Relations: 403 '=', 52 '>', 2 '<', 31 with no value. Units: 456 nM, 1 ug/mL, 31 missing.\n",
+        "488 records, 430 unique molecules, all assay type B (binding). Relations: 403 '=', 52 '>', 2 '<', 31 missing. Units: 456 nM, 1 ug/mL, 31 missing.\n",
         "Decision: keep exact ('=') values in nM."
       ]
     },
@@ -180,11 +180,11 @@
       "cell_type": "code",
       "execution_count": 4,
       "metadata": {
-        "id": "EnxCC6xAFlX1",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "e8f6a4be-6271-44a3-bdec-63d2eedbe24d"
+        "id": "EnxCC6xAFlX1",
+        "outputId": "414741e4-afee-4a51-cafc-59e41cff2e7b"
       },
       "outputs": [
         {
@@ -221,19 +221,19 @@
       },
       "source": [
         "## 2. Cleaning\n",
-        "Funnel: 488 raw -> 457 with a structure and a value -> 403 exact values (54 censored removed: 52 '>' and 2 '<') -> 402 in nM (1 ug/mL row removed).\n",
-        "Censored values give only a bound, and ug/mL cannot be converted to nM without molecular weight."
+        "Funnel: 488 raw -> 457 with a structure and a value -> 403 exact values (54 censored removed) -> 402 in nM (1 ug/mL row removed) -> 402 positive numeric values -> 381 after excluding 21 non-comparable records.\n",
+        "Exclusion (step 6): the 21 records of CHEMBL3044988, a QSAR re-analysis, report values for compounds also measured in the original paper (CHEMBL1143085) that differ by up to about 5 log units. They look transformed or predicted and are not comparable. They are saved to inha_excluded_records.csv."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 5,
       "metadata": {
-        "id": "JdcfI95Esrrr",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "5ca64fe1-4d63-436c-a5c9-5c8aa40ced0a"
+        "id": "JdcfI95Esrrr",
+        "outputId": "549a28c3-d8a5-47da-eeae-51eb79765d2b"
       },
       "outputs": [
         {
@@ -292,19 +292,19 @@
       "source": [
         "## 2b. Canonical SMILES, pIC50, duplicates\n",
         "pIC50 = 9 - log10(IC50 in nM). One row per molecule (median of repeats).\n",
-        "Result: 345 unique compounds, pIC50 3.40 to 8.70, mean 5.77, median 5.35, SD 1.21.\n",
-        "Repeats: 303 compounds measured once, 33 twice, 6 three times, 2 four times, 1 seven times. The largest spread between repeats is 6.92 log units, so the median can hide serious conflicts (see 2d)."
+        "Result: 345 unique compounds, pIC50 3.40 to 8.70, mean 5.87, median 5.51, SD 1.19.\n",
+        "Repeats: 323 compounds measured once, 14 twice, 5 three times, 2 four times, 1 seven times. The largest spread between repeats is 1.70 log units."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 6,
       "metadata": {
-        "id": "J96J0nyZGOTm",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "46801d18-b206-4fb1-ccba-acafc031ee3e"
+        "id": "J96J0nyZGOTm",
+        "outputId": "82406c8d-1523-4dfe-9b4e-e2eaabd95df3"
       },
       "outputs": [
         {
@@ -362,18 +362,18 @@
       },
       "source": [
         "## 2c. Sanity checks\n",
-        "0 compounds at pIC50 4.0 and 1 at 8.0, so no pile-up at round numbers. Cleaned data saved as inha_clean.csv."
+        "No compound sits at pIC50 4.0 and 1 at 8.0, so there is no pile-up at round numbers. Cleaned data saved as inha_clean.csv."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 7,
       "metadata": {
-        "id": "-P5WiQohGXnZ",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "ec6382f4-0865-4b76-9acf-7403eaa80844"
+        "id": "-P5WiQohGXnZ",
+        "outputId": "e2f6fea0-851d-4238-a9d7-aac51a5bc688"
       },
       "outputs": [
         {
@@ -411,18 +411,20 @@
         "id": "glur5z7aHLfq"
       },
       "source": [
-        "Result: [number] compounds differ by more than 2 log units between repeats; see the printed list. Values were not changed."
+        "## 2d. Audit of conflicting repeat measurements\n",
+        "Compounds whose repeated IC50 values differ by more than 2 log units are listed with their sources. The median of repeats hides such conflicts.\n",
+        "Finding: before the exclusion in section 2, 18 compounds differed by more than 2 log units, and every one involved CHEMBL3044988 (a QSAR re-analysis) versus the original measurements in CHEMBL1143085. After excluding those 21 records, the audit below finds 0 such compounds."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 8,
       "metadata": {
-        "id": "U5ZVi4MTHNlT",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "cc96f997-a2e3-4177-ae1e-c7454c4bf5cc"
+        "id": "U5ZVi4MTHNlT",
+        "outputId": "7d9035d6-2a6f-4da3-aa0a-e159b3fc791e"
       },
       "outputs": [
         {
@@ -452,19 +454,19 @@
       },
       "source": [
         "## 3. Featurization\n",
-        "Three representations: 7 physicochemical descriptors, Morgan fingerprint (radius 2, 1024 bits), MACCS keys (167).\n",
-        "All 130 molecules parsed. The variance filter is applied later inside each training fold to avoid leakage."
+        "Three representations: 7 physicochemical descriptors, Morgan fingerprint (radius 2, 1024 bits), MACCS keys (167). All 345 molecules parsed.\n",
+        "The variance filter is applied inside each training fold to avoid leakage."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 9,
       "metadata": {
-        "id": "US1wgK5WGtHQ",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "d46ce686-8b3a-4dbc-e032-a22f7f4165d2"
+        "id": "US1wgK5WGtHQ",
+        "outputId": "3ea36927-abd6-4e3c-c326-54aa80562793"
       },
       "outputs": [
         {
@@ -515,22 +517,21 @@
         "id": "EYzcs3PNdQ6n"
       },
       "source": [
-        "## 4. Exploratory analysis and nitro flag\n",
-        "18 compounds contain a nitro group, 112 do not. Mean pIC50: 6.07 vs 6.04.\n",
-        "The nitro flag is only a rough proxy for covalent mechanism (some nitro-free compounds are designed as covalent).\n",
-        "The pIC50 histogram has two humps (near 6.0 and 7.0); the cause is not established."
+        "## 4. Exploratory analysis\n",
+        "Panels: activity distribution, molecular weight vs LogP, and number of measurements per compound.\n",
+        "The mean pIC50 (5.87) is above the median (5.51), so the distribution is right-skewed, with a tail of potent compounds."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 10,
       "metadata": {
-        "id": "VdGVZdndGhhN",
         "colab": {
           "base_uri": "https://localhost:8080/",
           "height": 259
         },
-        "outputId": "5e589aa4-2216-4c23-f7a0-520cfd086f07"
+        "id": "VdGVZdndGhhN",
+        "outputId": "bb0264fd-61dc-4bfa-9099-a0f4f94b84e5"
       },
       "outputs": [
         {
@@ -576,19 +577,19 @@
       },
       "source": [
         "## 5. Scaffold structure of the dataset\n",
-        "50 Murcko scaffolds. Largest families: 47 (hydantoin-type), 15, 7, 7, 3. 40 scaffolds have a single compound.\n",
-        "Mean pIC50 of the four largest families: 6.24, 6.08, 7.15, 5.00. These do not explain the two humps."
+        "146 Murcko scaffolds; 100 are singletons. Largest families: 26, 23, 20, 19, 16 compounds.\n",
+        "Mean pIC50 (SD) of the four largest families: 5.16 (0.67), 4.76 (0.37), 6.68 (0.89), 7.45 (0.81); the other 257 compounds average 5.86 (1.16). Families differ strongly in potency level."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 11,
       "metadata": {
-        "id": "vhJAvnthG9E6",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "b7f66cbb-e57b-4a73-b754-efbd053aaac1"
+        "id": "vhJAvnthG9E6",
+        "outputId": "e8ef64d2-d580-4c80-e47d-c9b8e2f2adac"
       },
       "outputs": [
         {
@@ -629,7 +630,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "jZHfUedhHaKM",
-        "outputId": "be7a1b3a-34c8-40f6-85ea-7d607ad96922"
+        "outputId": "3c08a026-cd37-4a67-cd84-1b8b277c4f47"
       },
       "outputs": [
         {
@@ -661,8 +662,8 @@
       },
       "source": [
         "## 6. Single deterministic scaffold split\n",
-        "Largest families go to training first. Train 104, test 26. Shared scaffolds between train and test: 0 (leakage check passed).\n",
-        "Potency: train mean 6.04, test mean 6.03."
+        "Largest families go to training first. Train 276, test 69. Shared scaffolds between train and test: 0 (leakage check passed).\n",
+        "Potency: train mean 5.82 (SD 1.18), test mean 6.07 (SD 1.24)."
       ]
     },
     {
@@ -673,7 +674,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "IHvO7EG8NqSs",
-        "outputId": "986fc189-6b32-4579-acff-b12f0b5b924f"
+        "outputId": "7b7a1c79-a716-4022-85aa-e42ffbfc7e3a"
       },
       "outputs": [
         {
@@ -732,19 +733,19 @@
       },
       "source": [
         "## 7. First model check\n",
-        "Variance filter fitted on training data only (287 of 1024 bits kept).\n",
-        "Mean baseline R2 about 0.0; Random Forest R2 = -0.159. One 26-compound test set is too noisy to judge, so validation is repeated below."
+        "Variance filter fitted on training data only (549 of 1024 bits kept).\n",
+        "Mean baseline R2 = -0.040 (RMSE 1.259); Random Forest R2 = 0.293 (RMSE 1.038). One test set is noisy, so validation is repeated below."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 14,
       "metadata": {
-        "id": "8QMygP4sNtJg",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "17da4aad-f5cb-4132-c89f-8e9ed41d841f"
+        "id": "8QMygP4sNtJg",
+        "outputId": "65a3a3d9-9e39-4b9c-ccd9-2da4d5017103"
       },
       "outputs": [
         {
@@ -793,8 +794,8 @@
       },
       "source": [
         "## 8. Repeated scaffold-grouped validation (20 splits)\n",
-        "R2, mean +/- SD: baseline -0.155 +/- 0.245; RF Morgan -0.301 +/- 0.315; RF MACCS -0.126 +/- 0.231; RF descriptors -0.185 +/- 0.344.\n",
-        "No representation clearly beats the baseline. Test size varied from 11 to 76 compounds (fixed in section 18)."
+        "R2, mean +/- SD: baseline -0.081 +/- 0.112; RF Morgan 0.503 +/- 0.135; RF MACCS 0.488 +/- 0.135; RF descriptors 0.379 +/- 0.127. Each model beats the baseline in 100% of splits.\n",
+        "Test size varies from 41 to 142 compounds because whole scaffold families are assigned (fixed in section 18)."
       ]
     },
     {
@@ -805,7 +806,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "B09SSUSjOQwp",
-        "outputId": "61b6d7eb-65ed-45e7-e30a-428306dddb1f"
+        "outputId": "e5c9f63e-c2cf-4e86-886d-ce67b73204cd"
       },
       "outputs": [
         {
@@ -861,8 +862,8 @@
         "id": "uHwj-t3qeM73"
       },
       "source": [
-        "## 10. Random vs scaffold splits\n",
-        "Random-split R2: Morgan 0.642, MACCS 0.635, descriptors 0.577 (baseline -0.009). Scaffold-split R2 is lower for every model (0.472, 0.492, 0.447): a moderate gap."
+        "## 9. Random vs scaffold splits\n",
+        "Random-split R2: Morgan 0.693, MACCS 0.682, descriptors 0.540 (baseline -0.010). Scaffold-split R2 is lower for every model (0.503, 0.488, 0.379): a gap of about 0.16 to 0.19."
       ]
     },
     {
@@ -873,7 +874,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "KJMIjl9lPXOw",
-        "outputId": "6b143c87-4825-4b01-f7ee-76624314a001"
+        "outputId": "093d0945-c196-4a2f-de95-994d37f3bc5d"
       },
       "outputs": [
         {
@@ -917,9 +918,9 @@
         "id": "yffrzSwReTpu"
       },
       "source": [
-        "## 11. Local similarity diagnostic and kNN\n",
-        "Median nearest-neighbour Tanimoto similarity 0.78. Correlation between a compound's pIC50 and its nearest neighbour's: 0.77 (0.80 at similarity >= 0.5, 0.83 at >= 0.7). Uncertainty is quantified in section 11b.\n",
-        "kNN (k=5, fixed in advance): random R2 0.633, scaffold R2 0.357 +/- 0.269."
+        "## 10. Local similarity diagnostic and kNN\n",
+        "Median nearest-neighbour Tanimoto similarity 0.78. Correlation between a compound's pIC50 and its nearest neighbour's: 0.80 for all 345 compounds, 0.84 at similarity >= 0.5 (n=319) and 0.87 at >= 0.7 (n=271).\n",
+        "kNN (k=5, fixed in advance): random R2 0.691 +/- 0.079, scaffold R2 0.394 +/- 0.234. Uncertainty is quantified in section 10b."
       ]
     },
     {
@@ -930,7 +931,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "pJDWvznYPr0Y",
-        "outputId": "3760c064-ee5c-4a76-d139-5580fdd123ce"
+        "outputId": "dee1a1ca-ce84-4b81-af0d-37725cd8c930"
       },
       "outputs": [
         {
@@ -975,7 +976,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "lrIpMS3HQMx2",
-        "outputId": "747d7879-b377-4931-96e2-2720647e7bcf"
+        "outputId": "b46f6924-c9df-48fd-9748-0a5dce5a8833"
       },
       "outputs": [
         {
@@ -1007,8 +1008,9 @@
         "id": "T5uek5jVlyMv"
       },
       "source": [
-        "## 11b. Uncertainty on the nearest-neighbour correlation\n",
-        "Bootstrap over scaffold families (2000 resamples), so compounds from the same family are resampled together. This respects the non-independence of close analogs.Result: r = 0.77, 95% bootstrap interval 0.65 to 0.85. Close analogs carry strong information about potency; the estimate partly reflects analogs from the same paper."
+        "## 10b. Uncertainty on the nearest-neighbour correlation\n",
+        "Bootstrap over scaffold families (2000 resamples), so compounds from the same family are resampled together. This respects the non-independence of close analogs.\n",
+        "Result: r = 0.80, 95% bootstrap interval 0.72 to 0.85. Close analogs carry strong information about potency; part of this reflects analogs from the same paper."
       ]
     },
     {
@@ -1019,7 +1021,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "XlNz7O4vl2Rw",
-        "outputId": "bd75b316-91db-4fed-808d-9704acee4336"
+        "outputId": "f81d8781-2c10-4319-cfeb-a5a2e5d43a25"
       },
       "outputs": [
         {
@@ -1054,8 +1056,8 @@
         "id": "AuGwEaG2edhC"
       },
       "source": [
-        "## 12. Paired comparison with the baseline\n",
-        "Random baseline R2 = -0.009 +/- 0.009. All three Random Forest representations and kNN beat it in 100% of random splits; kNN beats the baseline in 85% of scaffold splits.\n",
+        "## 11. Paired comparison with the baseline\n",
+        "Random baseline R2 = -0.010 +/- 0.014. All three Random Forest representations and kNN beat it in 100% of random splits; kNN also beats the baseline in 100% of scaffold splits.\n",
         "Splits overlap, so these percentages are descriptive, not formal significance tests."
       ]
     },
@@ -1067,7 +1069,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "mMvRGLocQbqg",
-        "outputId": "ffe6fdfc-34f0-4aec-de2d-a4ab1a020cc4"
+        "outputId": "7aebed9e-5ea7-413f-fb5f-0f81c719fbe7"
       },
       "outputs": [
         {
@@ -1108,7 +1110,7 @@
         "id": "EMQaoL3-empV"
       },
       "source": [
-        "## 13. Source audit\n",
+        "## 12. Source audit\n",
         "All 488 records are assay type B. 50 assays from 36 source documents. Largest sources by raw records: 75, 56, 34, 30, 30.\n",
         "After cleaning, 28 papers contribute; the largest supplies 52 of 345 compounds (15%), much less concentrated than DprE1 (55%)."
       ]
@@ -1121,7 +1123,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "VP14lRflQqgJ",
-        "outputId": "8fc581a6-2143-4d33-fbb4-f06d15ca690a"
+        "outputId": "98515864-9b69-4150-eac9-903ef802828d"
       },
       "outputs": [
         {
@@ -1170,8 +1172,8 @@
         "id": "Oz_T-BsdeuFQ"
       },
       "source": [
-        "## 13b. Source papers (2002-2023)\n",
-        "About ten document titles read like reviews, one is a patent (\"Inha inhibitors and methods of use thereof\") and one is a QSAR re-analysis of earlier data. They are treated as secondary sources and need to be verified by opening them."
+        "## 12b. Source papers (2002-2023)\n",
+        "About ten document titles read like reviews, one is a patent (\"Inha inhibitors and methods of use thereof\") and one is a QSAR re-analysis of earlier data (CHEMBL3044988, excluded in section 2). These titles need to be verified by opening the documents."
       ]
     },
     {
@@ -1182,7 +1184,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "MvgywkMdb1dy",
-        "outputId": "cde7f0de-cd9f-4c43-fe7d-63577137419e"
+        "outputId": "36c535a5-ccf5-46b1-9964-b0533de3792d"
       },
       "outputs": [
         {
@@ -1243,9 +1245,9 @@
         "id": "d8nAgcFgexFB"
       },
       "source": [
-        "## 14. Scaffold families vs source papers\n",
-        "The pyrrolidine-carboxamide family (26) comes from one 2006 paper, the rhodanine family (23) from a 2019 paper, and the 19-compound family (mean pIC50 7.45) from a 2014 paper. The diaryl-ether family (20) is spread across six documents, three of them from a review-like source.\n",
-        "Paper mean pIC50 ranges from about 4.3 to 7.7. Source, chemical series and assay conditions are confounded."
+        "## 13. Scaffold families vs source papers\n",
+        "The 26-compound family comes entirely from one 2006 paper (CHEMBL1137386), the 23-compound family from one 2019 paper (CHEMBL4480441) and the 19-compound family (mean pIC50 7.45) from one 2014 paper (CHEMBL3124857). The 20-compound diaryl-ether family is spread over six documents, mostly the 2008 paper (CHEMBL1143085, 13 compounds).\n",
+        "For papers with at least 6 compounds, mean pIC50 ranges from 4.28 to 7.71. Source, chemical series and assay conditions are confounded."
       ]
     },
     {
@@ -1256,7 +1258,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "WI4WUxgfcZoR",
-        "outputId": "ace1f2db-e061-4116-a5a4-b5b5a5f4e6a0"
+        "outputId": "c4edcd2d-2080-40fe-e05d-918755976fe2"
       },
       "outputs": [
         {
@@ -1328,8 +1330,8 @@
         "id": "UkeoRHDce9_w"
       },
       "source": [
-        "## 15. Secondary-source compounds\n",
-        "33 of 345 compounds (10%) are assigned to secondary documents (reviews, a patent, a re-analysis): mean pIC50 6.31 (SD 1.19) vs 5.71 (SD 1.20) for the 312 compounds from primary papers. Where a compound appears in both, the primary paper is preferred."
+        "## 14. Secondary-source compounds\n",
+        "33 of 345 compounds (10%) are assigned to secondary documents (reviews, a patent): mean pIC50 6.31 (SD 1.19) vs 5.83 (SD 1.18) for the 312 compounds from primary papers. Where a compound appears in both, the primary paper is preferred."
       ]
     },
     {
@@ -1340,7 +1342,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "KQZg7BFkcahz",
-        "outputId": "198eebc4-7a8f-4c9d-e019-7ef6a73168d6"
+        "outputId": "4de17577-ad69-4fe9-d78e-29559beeb9f1"
       },
       "outputs": [
         {
@@ -1370,9 +1372,9 @@
         "id": "jRPCY_B7fCDX"
       },
       "source": [
-        "## 16. Source effect and sensitivity analysis\n",
-        "The source paper alone explains about 71% of pIC50 variance (28 papers; overstated because several papers are small).\n",
-        "Using only the 312 primary-source compounds (20 scaffold-grouped splits): baseline -0.077; RF Morgan 0.585, MACCS 0.560, descriptors 0.474, kNN 0.492. The scaffold-split result does not depend on the secondary sources."
+        "## 15. Source effect and sensitivity analysis\n",
+        "The source paper alone explains about 68% of pIC50 variance (28 papers; overstated because several papers are small).\n",
+        "Using only the 312 primary-source compounds, the scaffold-grouped results are unchanged (section 19A: baseline -0.085; Morgan 0.594, MACCS 0.567, descriptors 0.419, kNN 0.486)."
       ]
     },
     {
@@ -1383,7 +1385,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "B8KR7yvgcyyF",
-        "outputId": "455cd8b4-28b9-4b1e-e6d5-c9f0912ce160"
+        "outputId": "2d6a3736-4dc8-4cae-c961-59c4b18b152f"
       },
       "outputs": [
         {
@@ -1421,7 +1423,7 @@
         "id": "6atni_TJfOyt"
       },
       "source": [
-        "## 17. Consolidated per-split report\n",
+        "## 16. Consolidated per-split report\n",
         "R2, RMSE, MAE and test size for every split are saved in inha_model_eval_all_splits.csv; test-set assignments in inha_split_assignments.json.\n",
         "Random splits: test size 69. Scaffold-grouped splits: test size 41 to 142."
       ]
@@ -1430,11 +1432,11 @@
       "cell_type": "code",
       "execution_count": 26,
       "metadata": {
+        "id": "qMNsvutNdcxI",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "id": "qMNsvutNdcxI",
-        "outputId": "b52ee11c-4275-4cd6-efc7-040bf5c9c3f8"
+        "outputId": "a1a5de64-a083-41c1-f50e-ef4d9b3d3155"
       },
       "outputs": [
         {
@@ -1501,19 +1503,20 @@
         "id": "l2Fg1nzOfTLw"
       },
       "source": [
-        "## 18. Fixed-size scaffold protocol (declared in advance)\n",
-        "Test is about 20% each time (69 to 71 compounds). Families larger than 15 compounds (five families) always stay in training, so they are never held out. Results: baseline R2 -0.031; RF descriptors 0.409; RF MACCS 0.490; RF Morgan 0.558; kNN 0.495. Saved as inha_model_eval_scaffold_fixed.csv."
+        "## 17. Fixed-size scaffold protocol (declared in advance)\n",
+        "Test is about 20% each time (69 to 71 compounds). Families larger than 15 compounds (five families) always stay in training, so they are never held out.\n",
+        "Results: baseline R2 -0.034 +/- 0.042; RF descriptors 0.313 +/- 0.216; RF MACCS 0.518 +/- 0.135; RF Morgan 0.522 +/- 0.141; kNN 0.480 +/- 0.161. Saved as inha_model_eval_scaffold_fixed.csv."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 27,
       "metadata": {
+        "id": "splbsie-ekcP",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "id": "splbsie-ekcP",
-        "outputId": "71d84169-bb79-4b29-ffae-18c115bec7c8"
+        "outputId": "514fcb38-04a8-4e1e-877f-88653b3c311c"
       },
       "outputs": [
         {
@@ -1595,20 +1598,20 @@
         "id": "QUDNUIjIhblu"
       },
       "source": [
-        "## 20. Distribution of results across splits\n",
-        "Boxplots of R2 over 20 splits for each model and protocol (all 345 compounds). On InhA the boxes sit clearly above the baseline under all three protocols; the dashed line is R2 = 0."
+        "## 18. Distribution of results across splits\n",
+        "Boxplots of R2 over 20 splits for each model and protocol (all 345 compounds). Under all three protocols the boxes sit clearly above the baseline; the dashed line is R2 = 0."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 29,
       "metadata": {
+        "id": "8SFROW5jhdXH",
         "colab": {
           "base_uri": "https://localhost:8080/",
           "height": 290
         },
-        "id": "8SFROW5jhdXH",
-        "outputId": "09811ff0-7c93-40d2-aaed-109c1014ca79"
+        "outputId": "b4abee33-75c7-44b8-bf2f-7a7c284956e5"
       },
       "outputs": [
         {
@@ -1649,21 +1652,22 @@
         "id": "U3jtuCjALSJS"
       },
       "source": [
-        "## 21. Primary-source sensitivity, time split and leave-one-paper-out\n",
+        "## 19. Primary-source sensitivity, time split and leave-one-paper-out\n",
         "Declared before running. (A) Repeat 20 scaffold-grouped splits using only compounds from primary papers. (B) Time split: train on papers up to 2019, test on 2020 onward (about 20%). (C) Leave-one-paper-out for primary papers with at least 15 compounds. Metrics: R2 and Spearman. All results will be reported. Rule: if R2 and Spearman stay clearly above the baseline when whole papers are held out, the InhA signal is not just series/paper identity; if they drop toward zero, it largely is.\n",
-        "Results. (A) Primary-only scaffold R2: baseline -0.077; Morgan 0.585, MACCS 0.560, descriptors 0.474, kNN 0.492. (B) Time split (train 256 up to 2019, test 56 from 2020): baseline R2 -0.291; Morgan -0.403, MACCS -0.507, descriptors -1.093, kNN +0.097; Spearman 0.09 to 0.36. (C) Leave-one-paper-out (9 papers with at least 15 compounds): R2 strongly negative for all models (the baseline reaches -13.5 for the most potent paper); mean Spearman 0.105 to 0.155, positive for 5 to 6 of 9 papers.\n",
-        "Interpretation: the skill under scaffold splits largely does not transfer to new papers or later years. Rankings are only weakly better than chance there."
+        "\n",
+        "Results. (A) Primary-only scaffold R2 (312 compounds): baseline -0.085; Morgan 0.594, MACCS 0.567, descriptors 0.419, kNN 0.486. (B) Time split (train 256 up to 2019, test 56 from 2020): baseline R2 -0.497; Morgan -0.570, MACCS -0.954, descriptors -1.336, kNN -0.136; Spearman 0.13 (Morgan), 0.54 (MACCS), 0.28 (descriptors), 0.40 (kNN). (C) Leave-one-paper-out (9 papers with at least 15 compounds): R2 is strongly negative for most models (the baseline itself reaches -20.5 for one paper); mean Spearman 0.105 (Morgan), 0.224 (MACCS), 0.120 (descriptors), 0.210 (kNN), positive for 5 to 7 of 9 papers.\n",
+        "Interpretation: the skill under scaffold splits largely does not carry over to new papers or later years. Rankings are weakly to modestly better than chance there (Spearman about 0.1 to 0.2), and predicted values are poor."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 30,
       "metadata": {
+        "id": "_mWk4kVPLRaA",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "id": "_mWk4kVPLRaA",
-        "outputId": "0c50e859-aae5-4ffc-abbc-6c1749413b57"
+        "outputId": "c842683b-53bd-466b-d465-3cf339caf848"
       },
       "outputs": [
         {
@@ -1796,21 +1800,23 @@
         "id": "xWu3bz9vHWOf"
       },
       "source": [
-        "## 22. Size-matched control (declared before running)\n",
-        "InhA is subsampled at random to 65, 130 and 260 compounds (20 repeats each) and evaluated with one scaffold-grouped 80/20 split per repeat, as for DprE1 in section 8. Interpretation rule: if R2 at 130 compounds is close to zero or near the baseline, sample size explains the DprE1 result; if it stays clearly above the baseline, size alone does not.\n",
-        "Limit: random subsampling keeps InhA's multi-paper structure, so this tests size only, not single-paper dominance.Results (R2, mean +/- SD over 20 subsamples). n=65: baseline -0.118; Morgan 0.108, MACCS 0.133, descriptors 0.131. n=130: baseline -0.120; Morgan 0.387 +/- 0.269, MACCS 0.267 +/- 0.359, descriptors 0.151 +/- 0.316. n=260: baseline -0.157; Morgan 0.414, MACCS 0.386, descriptors 0.298.\n",
-        "At 130 compounds InhA still beats its baseline, whereas DprE1 at 130 did not (Morgan -0.301, baseline -0.155). Sample size alone therefore does not explain the DprE1 result. Note the variability (SD 0.27 to 0.37), and that random subsampling keeps InhA's many-paper structure."
+        "## 20. Size-matched control (declared before running)\n",
+        "InhA is subsampled at random to 65, 130 and 260 compounds (20 repeats each) and evaluated with one scaffold-grouped 80/20 split per repeat, as for DprE1 in the DprE1 notebook (section 8). Interpretation rule: if R2 at 130 compounds is close to zero or near the baseline, sample size explains the DprE1 result; if it stays clearly above the baseline, size alone does not.\n",
+        "Limit: random subsampling keeps InhA's multi-paper structure, so this tests size only, not single-paper dominance.\n",
+        "\n",
+        "Results (R2, mean +/- SD over 20 subsamples). n=65: baseline -0.117 +/- 0.179; Morgan 0.206, MACCS 0.161, descriptors 0.098. n=130: baseline -0.129 +/- 0.212; Morgan 0.355 +/- 0.309, MACCS 0.289 +/- 0.401, descriptors 0.089 +/- 0.359. n=260: baseline -0.148 +/- 0.214; Morgan 0.402, MACCS 0.400, descriptors 0.206.\n",
+        "At 130 compounds Morgan and MACCS on InhA stay clearly above the baseline, whereas DprE1 at 130 did not (Morgan -0.301, MACCS -0.126, baseline -0.155). Descriptors are only slightly above the baseline. Sample size alone therefore does not explain the DprE1 result. The variability is large (SD 0.31 to 0.40)."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 31,
       "metadata": {
+        "id": "dvLcRmGBHYce",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "id": "dvLcRmGBHYce",
-        "outputId": "373db293-b117-4697-cdda-96ef10573ff3"
+        "outputId": "a03aa1ec-73b5-446d-9dc3-faf1b9a0476b"
       },
       "outputs": [
         {
@@ -1861,22 +1867,23 @@
       },
       "source": [
         "## Summary and limitations\n",
-        "- InhA (345 compounds, 28 papers): Random Forest and kNN predict held-out scaffold families well (scaffold-grouped R2 about 0.45 to 0.59 against a baseline of -0.08; nearest-neighbour correlation 0.77, 95% interval 0.65 to 0.85).\n",
-        "- That skill largely does not transfer: with a time split (train up to 2019, test 2020 on) only kNN reaches R2 above 0 (0.10), and with leave-one-paper-out the mean Spearman is only 0.11 to 0.16. The source paper alone explains about 71% of pIC50 variance.\n",
-        "- Compared with DprE1 (130 compounds, one paper supplying 55%, no skill even within series), InhA at the same size still beats its baseline under scaffold validation, so small size alone does not explain the DprE1 result.\n",
-        "- Limitations: source paper, chemical series and assay conditions are confounded; 33 compounds come from secondary sources; at least one compound has repeats differing by 6.9 log units; random subsampling in the size control keeps the multi-paper structure; the fixed-size protocol never holds out the five families larger than 15 compounds; leave-one-paper-out test sets are small.\n",
-        "- Open items: duplicate-audit results, verify the secondary-source document list, literature-gap search, supervisor decision on scope."
+        "- InhA (345 compounds, 28 papers): Random Forest and kNN predict held-out scaffold families well (scaffold-grouped R2 about 0.38 to 0.50 against a baseline of -0.08; up to 0.59 on primary-source compounds only). The nearest-neighbour correlation is 0.80 (95% interval 0.72 to 0.85), and the source paper alone explains about 68% of pIC50 variance.\n",
+        "- That skill transfers only weakly to new papers or later years: with a time split only kNN beats the baseline (R2 -0.14 vs -0.50), and with leave-one-paper-out the mean Spearman is 0.11 to 0.22.\n",
+        "- Compared with DprE1 (130 compounds, one paper supplying 55%, no skill even within series), InhA subsampled to 130 compounds still beats its baseline under scaffold validation (Morgan 0.36, MACCS 0.29 vs baseline -0.13), so small size alone does not explain the DprE1 result.\n",
+        "- Data quality: 21 records from a QSAR re-analysis (CHEMBL3044988) were excluded because they differ from the original measurements by up to about 5 log units; before the exclusion they distorted the median for 18 compounds.\n",
+        "- Limitations: source paper, chemical series and assay conditions are confounded; 33 compounds come from secondary sources (verify by title); the fixed-size protocol never holds out the five families larger than 15 compounds; leave-one-paper-out and time-split test sets are small; the size-matched control keeps InhA's multi-paper structure.\n",
+        "- Open items: literature-gap search, verify the secondary-source document list, supervisor decision on scope."
       ]
     },
     {
       "cell_type": "code",
       "execution_count": 32,
       "metadata": {
+        "id": "81CF4QaBGht2",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "id": "81CF4QaBGht2",
-        "outputId": "a01bbd11-7e39-474c-9b62-535ad5d96b8b"
+        "outputId": "d6d8c8bd-776d-47b5-8e29-5d4f11aa40bc"
       },
       "outputs": [
         {
