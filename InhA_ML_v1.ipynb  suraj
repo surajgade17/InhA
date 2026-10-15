@@ -18,7 +18,7 @@
       "source": [
         "# InhA bioactivity modelling: validation design and data limits\n",
         "Goal: test how well ML models predict pIC50 for M. tuberculosis InhA inhibitors from public ChEMBL data (second target of the DprE1 comparison), and how the validation design (random, scaffold, time, leave-one-paper-out) changes the answer.\n",
-        "Data: ChEMBL target CHEMBL1849 (enoyl-[acyl-carrier-protein] reductase [NADH], M. tuberculosis), standard_type IC50. Retrieved on: 13 October 2026 via the ChEMBL web resource client (live API; release 37, confirmed on the ChEMBL downloads page).\n",
+        "Data: ChEMBL target CHEMBL1849 (enoyl-[acyl-carrier-protein] reductase [NADH], M. tuberculosis), standard_type IC50. Retrieved on: 14 October 2026 via the ChEMBL web resource client (live API; release 37, confirmed on the ChEMBL downloads page).\n",
         "Random seed: 42 everywhere. Companion notebook: DprE1_ML_v1 (same pipeline, 130 compounds)."
       ]
     },
@@ -44,9 +44,20 @@
         },
         "collapsed": true,
         "id": "2kVN4zDnvbcr",
-        "outputId": "4372750e-747a-4ee0-d132-e902b0840f87"
+        "outputId": "1c4d5315-c297-470b-d868-e718558c0e0c"
       },
       "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m31.8/31.8 MB\u001b[0m \u001b[31m56.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m55.2/55.2 kB\u001b[0m \u001b[31m4.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m70.8/70.8 kB\u001b[0m \u001b[31m6.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m74.8/74.8 kB\u001b[0m \u001b[31m6.6 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25h"
+          ]
+        },
         {
           "output_type": "stream",
           "name": "stderr",
@@ -103,7 +114,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "a9NzYEKna1zk",
-        "outputId": "16d83a65-5b9e-446a-feee-ac02fbd91290"
+        "outputId": "0559b708-e1d8-4989-d901-92643104fea1"
       },
       "outputs": [
         {
@@ -112,7 +123,7 @@
           "text": [
             "Enoyl-[acyl-carrier-protein] reductase [NADH] | Mycobacterium tuberculosis\n",
             "(488, 13)\n",
-            "Data retrieved on: 2026-10-14\n"
+            "Data retrieved on: 2026-10-15\n"
           ]
         }
       ],
@@ -145,7 +156,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "rCDHdf52FbQJ",
-        "outputId": "1d6c7965-8b4f-4de0-cf47-0e99027d616f"
+        "outputId": "22adbe04-7e84-4c58-9566-9ae88ce154cf"
       },
       "outputs": [
         {
@@ -184,7 +195,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "EnxCC6xAFlX1",
-        "outputId": "414741e4-afee-4a51-cafc-59e41cff2e7b"
+        "outputId": "f576eded-ce06-45e9-c89a-9ad9507c63d5"
       },
       "outputs": [
         {
@@ -233,7 +244,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "JdcfI95Esrrr",
-        "outputId": "549a28c3-d8a5-47da-eeae-51eb79765d2b"
+        "outputId": "3f985971-ddc1-4822-d6e4-bd0807054235"
       },
       "outputs": [
         {
@@ -304,7 +315,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "J96J0nyZGOTm",
-        "outputId": "82406c8d-1523-4dfe-9b4e-e2eaabd95df3"
+        "outputId": "434f6e6c-03b9-4522-ff6a-40bed65d3bd4"
       },
       "outputs": [
         {
@@ -373,7 +384,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "-P5WiQohGXnZ",
-        "outputId": "e2f6fea0-851d-4238-a9d7-aac51a5bc688"
+        "outputId": "c50227ea-9f56-48b7-aa9c-916eff23f523"
       },
       "outputs": [
         {
@@ -424,7 +435,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "U5ZVi4MTHNlT",
-        "outputId": "7d9035d6-2a6f-4da3-aa0a-e159b3fc791e"
+        "outputId": "cb6abdde-97a3-4188-cd58-9c106c1d9f61"
       },
       "outputs": [
         {
@@ -466,7 +477,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "US1wgK5WGtHQ",
-        "outputId": "3ea36927-abd6-4e3c-c326-54aa80562793"
+        "outputId": "d1de2f8f-c178-417e-8970-1f56d47efdc9"
       },
       "outputs": [
         {
@@ -528,10 +539,10 @@
       "metadata": {
         "colab": {
           "base_uri": "https://localhost:8080/",
-          "height": 259
+          "height": 138
         },
         "id": "VdGVZdndGhhN",
-        "outputId": "bb0264fd-61dc-4bfa-9099-a0f4f94b84e5"
+        "outputId": "f97aa6f0-efa8-49d8-95d6-e98f71ccba31"
       },
       "outputs": [
         {
@@ -589,7 +600,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "vhJAvnthG9E6",
-        "outputId": "e8ef64d2-d580-4c80-e47d-c9b8e2f2adac"
+        "outputId": "e1dd4bcc-c8fb-499c-9eab-81e157c40b17"
       },
       "outputs": [
         {
@@ -630,7 +641,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "jZHfUedhHaKM",
-        "outputId": "3c08a026-cd37-4a67-cd84-1b8b277c4f47"
+        "outputId": "b2275071-c90e-4f48-f7ae-75a16497cafc"
       },
       "outputs": [
         {
@@ -674,7 +685,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "IHvO7EG8NqSs",
-        "outputId": "7b7a1c79-a716-4022-85aa-e42ffbfc7e3a"
+        "outputId": "85330a9e-b3e7-462a-a5fb-6f1f91b3e496"
       },
       "outputs": [
         {
@@ -745,7 +756,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "8QMygP4sNtJg",
-        "outputId": "65a3a3d9-9e39-4b9c-ccd9-2da4d5017103"
+        "outputId": "8d7c93f8-8d62-4fe9-cfdb-55e7af4a2e1d"
       },
       "outputs": [
         {
@@ -806,7 +817,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "B09SSUSjOQwp",
-        "outputId": "e5c9f63e-c2cf-4e86-886d-ce67b73204cd"
+        "outputId": "1d626dc6-b279-4b0c-f0a0-ba4ab9a84c72"
       },
       "outputs": [
         {
@@ -874,7 +885,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "KJMIjl9lPXOw",
-        "outputId": "093d0945-c196-4a2f-de95-994d37f3bc5d"
+        "outputId": "83707652-774a-4dd6-93b5-92137761e88a"
       },
       "outputs": [
         {
@@ -931,7 +942,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "pJDWvznYPr0Y",
-        "outputId": "dee1a1ca-ce84-4b81-af0d-37725cd8c930"
+        "outputId": "6f81ffad-c56e-451d-ac58-9ba61103ed01"
       },
       "outputs": [
         {
@@ -976,7 +987,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "lrIpMS3HQMx2",
-        "outputId": "b46f6924-c9df-48fd-9748-0a5dce5a8833"
+        "outputId": "2b0ddff8-389a-4156-f177-4031d576d6fe"
       },
       "outputs": [
         {
@@ -1021,7 +1032,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "XlNz7O4vl2Rw",
-        "outputId": "f81d8781-2c10-4319-cfeb-a5a2e5d43a25"
+        "outputId": "1c6726e3-c806-40cd-e8cf-bd4e747e4708"
       },
       "outputs": [
         {
@@ -1069,7 +1080,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "mMvRGLocQbqg",
-        "outputId": "7aebed9e-5ea7-413f-fb5f-0f81c719fbe7"
+        "outputId": "387d772f-a9ba-4cfe-ec80-008befcde376"
       },
       "outputs": [
         {
@@ -1123,7 +1134,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "VP14lRflQqgJ",
-        "outputId": "98515864-9b69-4150-eac9-903ef802828d"
+        "outputId": "3f96960f-cbc9-491e-abfa-1f864c781810"
       },
       "outputs": [
         {
@@ -1184,7 +1195,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "MvgywkMdb1dy",
-        "outputId": "36c535a5-ccf5-46b1-9964-b0533de3792d"
+        "outputId": "8805ade2-365d-4fe1-dbdd-54203bbf69d8"
       },
       "outputs": [
         {
@@ -1258,7 +1269,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "WI4WUxgfcZoR",
-        "outputId": "c4edcd2d-2080-40fe-e05d-918755976fe2"
+        "outputId": "867cbe15-645e-41f0-dbc1-2619d01a6a47"
       },
       "outputs": [
         {
@@ -1342,7 +1353,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "KQZg7BFkcahz",
-        "outputId": "4de17577-ad69-4fe9-d78e-29559beeb9f1"
+        "outputId": "3de08281-4cb6-4dab-fda9-62e5a9b5298d"
       },
       "outputs": [
         {
@@ -1385,7 +1396,7 @@
           "base_uri": "https://localhost:8080/"
         },
         "id": "B8KR7yvgcyyF",
-        "outputId": "2d6a3736-4dc8-4cae-c961-59c4b18b152f"
+        "outputId": "a2a20fe7-8778-4c3c-818a-98e79a3045eb"
       },
       "outputs": [
         {
@@ -1436,7 +1447,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "a1a5de64-a083-41c1-f50e-ef4d9b3d3155"
+        "outputId": "2494e708-b362-4b0c-e250-a1b4a76894b7"
       },
       "outputs": [
         {
@@ -1516,7 +1527,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "514fcb38-04a8-4e1e-877f-88653b3c311c"
+        "outputId": "c45c09ec-b93c-4c24-b2fa-3874e9bfedab"
       },
       "outputs": [
         {
@@ -1609,9 +1620,9 @@
         "id": "8SFROW5jhdXH",
         "colab": {
           "base_uri": "https://localhost:8080/",
-          "height": 290
+          "height": 153
         },
-        "outputId": "b4abee33-75c7-44b8-bf2f-7a7c284956e5"
+        "outputId": "99592abb-4a56-4f21-c8f5-284305a2769d"
       },
       "outputs": [
         {
@@ -1667,7 +1678,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "c842683b-53bd-466b-d465-3cf339caf848"
+        "outputId": "2d584860-58aa-47a0-ddab-8ae208faf005"
       },
       "outputs": [
         {
@@ -1816,7 +1827,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "a03aa1ec-73b5-446d-9dc3-faf1b9a0476b"
+        "outputId": "27416780-e8b1-4935-8b46-0fc8a49232f9"
       },
       "outputs": [
         {
@@ -1883,7 +1894,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "d6d8c8bd-776d-47b5-8e29-5d4f11aa40bc"
+        "outputId": "8cc40f6c-6fdc-45ca-e67b-1e1b47999de8"
       },
       "outputs": [
         {
