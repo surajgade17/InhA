@@ -1,0 +1,22 @@
+assay_chembl_id,assay_description,assay_type,canonical_smiles,document_chembl_id,molecule_chembl_id,relation,standard_relation,standard_units,standard_value,type,units,value
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccc(CN3CCN(C)CC3)cc2)c(O)c1,CHEMBL3044988,CHEMBL261355,=,=,nM,3273406.95,pIC50,,2.485
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccc2CN2CCN(C)CC2)c(O)c1,CHEMBL3044988,CHEMBL408149,=,=,nM,762079.01,pIC50,,3.118
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccc(NC(=O)c3ccno3)cc2)c(O)c1,CHEMBL3044988,CHEMBL260399,=,=,nM,7709034.69,pIC50,,2.113
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2cccc(NC(=O)c3ccno3)c2)c(O)c1,CHEMBL3044988,CHEMBL405653,=,=,nM,820351.54,pIC50,,3.086
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccc2NC(=O)c2ccno2)c(O)c1,CHEMBL3044988,CHEMBL428967,=,=,nM,311171.63,pIC50,,3.507
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccc(NC(=O)C(=O)O)cc2)c(O)c1,CHEMBL3044988,CHEMBL262343,=,=,nM,518800.04,pIC50,,3.285
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccc(NC(C)=O)cc2)c(O)c1,CHEMBL3044988,CHEMBL262360,=,=,nM,770903.47,pIC50,,3.113
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2cccc(NC(C)=O)c2)c(O)c1,CHEMBL3044988,CHEMBL404983,=,=,nM,1725837.89,pIC50,,2.763
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccc2NC(C)=O)c(O)c1,CHEMBL3044988,CHEMBL264176,=,=,nM,645654.23,pIC50,,3.19
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccc(N)cc2)c(O)c1,CHEMBL3044988,CHEMBL264175,=,=,nM,18184442.88,pIC50,,1.7403
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2cccc(N)c2)c(O)c1,CHEMBL3044988,CHEMBL404984,=,=,nM,918332.6,pIC50,,3.037
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccc2N)c(O)c1,CHEMBL3044988,CHEMBL264434,=,=,nM,16143585.57,pIC50,,1.792
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccc([N+](=O)[O-])cc2)c(O)c1,CHEMBL3044988,CHEMBL264417,=,=,nM,11117317.27,pIC50,,1.954
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2cccc([N+](=O)[O-])c2)c(O)c1,CHEMBL3044988,CHEMBL264416,=,=,nM,20844908.83,pIC50,,1.681
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccc2[N+](=O)[O-])c(O)c1,CHEMBL3044988,CHEMBL264415,=,=,nM,5559042.57,pIC50,,2.255
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2cnccn2)c(O)c1,CHEMBL3044988,CHEMBL258932,=,=,nM,1541700.45,pIC50,,2.812
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ncccn2)c(O)c1,CHEMBL3044988,CHEMBL258931,=,=,nM,122179.97,pIC50,,3.913
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccncc2)c(O)c1,CHEMBL3044988,CHEMBL259138,=,=,nM,6251726.93,pIC50,,2.204
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2cccnc2)c(O)c1,CHEMBL3044988,CHEMBL405655,=,=,nM,4226686.14,pIC50,,2.374
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccn2)c(O)c1,CHEMBL3044988,CHEMBL264679,=,=,nM,87096.36,pIC50,,4.06
+CHEMBL3047415,Inhibition of Mycobacterium tuberculosis InhA,B,CCCCCCc1ccc(Oc2ccccc2)c(O)c1,CHEMBL3044988,CHEMBL264682,=,=,nM,90928494.39,pIC50,,1.0413
